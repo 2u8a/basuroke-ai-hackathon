@@ -1,0 +1,67 @@
+{
+  "out_of_period": {
+    "total_accepted": 8613,
+    "gt_in_service": 4829,
+    "gt_low_conf_excluded": 304,
+    "gt_not_in_service": 3480,
+    "trip_correct": 3961,
+    "trip_wrong": 133,
+    "missed_no_estimate": 735,
+    "route_correct": 3961,
+    "false_positive": 2978,
+    "trip_accuracy_pct": 82.0,
+    "route_accuracy_pct": 84.2
+  },
+  "pre_v3_再推定": {
+    "total_accepted": 33257,
+    "gt_in_service": 18599,
+    "gt_low_conf_excluded": 1948,
+    "gt_not_in_service": 12710,
+    "trip_correct": 14056,
+    "trip_wrong": 2123,
+    "missed_no_estimate": 2420,
+    "route_correct": 14056,
+    "false_positive": 10600,
+    "trip_accuracy_pct": 75.6,
+    "route_accuracy_pct": 83.9
+  },
+  "v3_便固定": {
+    "total_accepted": 31872,
+    "gt_in_service": 17563,
+    "gt_low_conf_excluded": 2755,
+    "gt_not_in_service": 11554,
+    "trip_correct": 12015,
+    "trip_wrong": 3258,
+    "missed_no_estimate": 2290,
+    "route_correct": 12015,
+    "false_positive": 9092,
+    "trip_accuracy_pct": 68.4,
+    "route_accuracy_pct": 76.4
+  },
+  "v3.2_始発保留": {
+    "total_accepted": 3615,
+    "gt_in_service": 2090,
+    "gt_low_conf_excluded": 305,
+    "gt_not_in_service": 1220,
+    "trip_correct": 1816,
+    "trip_wrong": 160,
+    "missed_no_estimate": 114,
+    "route_correct": 1816,
+    "false_positive": 986,
+    "trip_accuracy_pct": 86.9,
+    "route_accuracy_pct": 93.1
+  },
+  "v3.3_topology": {
+    "total_accepted": 87943,
+    "gt_in_service": 50056,
+    "gt_low_conf_excluded": 4590,
+    "gt_not_in_service": 33297,
+    "trip_correct": 42144,
+    "trip_wrong": 4730,
+    "missed_no_estimate": 3182,
+    "route_correct": 42144,
+    "false_positive": 27825,
+    "trip_accuracy_pct": 84.2,
+    "route_accuracy_pct": 91.6
+  }
+}

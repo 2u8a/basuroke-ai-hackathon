@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瑞穂町コミュニティバス・ナビ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .map-container {
+            height: 60vh;
+            background: #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 路線図のデフォルメ表現 */
+        .route-line {
+            position: absolute;
+            stroke-width: 8;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        /* アニメーションするバスアイコン */
+        .bus-marker {
+            position: absolute;
+            transition: all 2s ease-in-out;
+            z-index: 50;
+        }
+
+        .pulse-delay {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ボトムシートのスタイル */
+        .bottom-sheet {
+            height: 40vh;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            position: relative;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- ヘッダー -->
+    <header class="bg-orange-500 text-white p-4 shadow-md flex justify-between items-center">
+        <h1 class="font-bold text-lg flex items-center gap-2">
+            <i data-lucide="bus"></i> 瑞穂町バス・ナビ
+        </h1>
+        <span class="text-xs bg-white text-orange-600 px-2 py-1 rounded-full font-bold">実証実験中</span>
+    </header>
+
+    <!-- マップエリア -->
+    <div class="map-container bg-slate-200">
+        <!-- 簡易的な地図背景の模様（SVG） -->
+        <svg width="100%" height="100%" viewBox="0 0 400 400" class="absolute inset-0 opacity-30">
+            <path d="M0 100 Q 100 80 200 100 T 400 100" stroke="#94a3b8" fill="none" stroke-width="2"/>
+            <path d="M50 0 L 50 400" stroke="#94a3b8" fill="none" stroke-width="1"/>
+            <path d="M300 0 L 300 400" stroke="#94a3b8" fill="none" stroke-width="1"/>
+        </svg>
+
+        <!-- 路線図（デフォルメ） -->
+        <svg width="100%" height="100%" viewBox="0 0 400 400" class="absolute inset-0">
+            <!-- 石畑・殿ヶ谷コース（オレンジ） -->
+            <path d="M50 350 L 150 250 L 250 200 L 350 50" class="route-line" stroke="#f97316" opacity="0.6"/>
+            <!-- 元狭山コース（ブルー） -->
+            <path d="M50 50 L 150 150 L 250 250 L 350 350" class="route-line" stroke="#3b82f6" opacity="0.6"/>
+            
+            <!-- バス停 -->
+            <circle cx="150" cy="250" r="6" fill="white" stroke="#f97316" stroke-width="3"/>
+            <circle cx="250" cy="200" r="6" fill="white" stroke="#f97316" stroke-width="3"/>
+            <circle cx="150" cy="150" r="6" fill="white" stroke="#3b82f6" stroke-width="3"/>
+        </svg>
+
+        <!-- 動くバスアイコン（オレンジ路線・遅延あり） -->
+        <div id="bus-orange" class="bus-marker" style="top: 230px; left: 140px;">
+            <div class="relative flex flex-col items-center">
+                <div class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-lg pulse-delay">
+                    +8分遅れ
+                </div>
+                <div class="bg-orange-500 p-2 rounded-lg shadow-xl border-2 border-white">
+                    <i data-lucide="bus-front" class="text-white w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 動くバスアイコン（ブルー路線・定刻） -->
+        <div id="bus-blue" class="bus-marker" style="top: 130px; left: 130px;">
+            <div class="relative flex flex-col items-center">
+                <div class="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-lg">
+                    定刻
+                </div>
+                <div class="bg-blue-500 p-2 rounded-lg shadow-xl border-2 border-white">
+                    <i data-lucide="bus-front" class="text-white w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ボトムシート -->
+    <div class="bottom-sheet">
+        <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-6"></div>
+        
+        <h2 class="text-gray-500 text-sm font-bold mb-4 uppercase tracking-wider">最寄りのバス停</h2>
+        
+        <div class="space-y-4">
+            <!-- バス情報カード 1 -->
+            <div class="flex items-center justify-between p-4 bg-orange-50 rounded-2xl border-l-8 border-orange-500 shadow-sm">
+                <div>
+                    <div class="text-xs text-orange-600 font-bold mb-1">石畑・殿ヶ谷コース</div>
+                    <div class="text-xl font-bold text-gray-800">箱根ケ崎駅</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">あと</div>
+                    <div class="text-2xl font-black text-red-600">約 5 分</div>
+                </div>
+            </div>
+
+            <!-- バス情報カード 2 -->
+            <div class="flex items-center justify-between p-4 bg-blue-50 rounded-2xl border-l-8 border-blue-500 shadow-sm opacity-60">
+                <div>
+                    <div class="text-xs text-blue-600 font-bold mb-1">元狭山コース</div>
+                    <div class="text-xl font-bold text-gray-800">瑞穂町役場</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">あと</div>
+                    <div class="text-2xl font-black text-gray-700">約 14 分</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // アイコンの初期化
+        lucide.createIcons();
+
+        // デモ用：バスを少し動かす
+        setInterval(() => {
+            const busOrange = document.getElementById('bus-orange');
+            const currentLeft = parseInt(busOrange.style.left);
+            if (currentLeft < 300) {
+                busOrange.style.left = (currentLeft + 5) + 'px';
+                busOrange.style.top = (parseInt(busOrange.style.top) - 3) + 'px';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

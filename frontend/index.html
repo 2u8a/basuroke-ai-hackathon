@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>瑞穂町コミュニティバス バスロケーションシステム実証</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans JP"', 'sans-serif'],
+          },
+          colors: {
+            corporate: {
+              DEFAULT: '#005bac',
+              light: '#e6f0fa',
+              dark: '#004080'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #334155;
+    }
+  </style>
+</head>
+
+<body class="antialiased font-sans">
+
+  <!-- ヘッダー -->
+  <header class="bg-white text-center py-24">
+    <div data-aos="fade-up">
+      <span class="bg-corporate text-white px-3 py-1 text-xs rounded-full">PoC PROJECT</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mt-4">
+        瑞穂町コミュニティバス<br>
+        <span class="text-corporate">バスロケーションシステム実証</span>
+      </h1>
+      <p class="mt-4 text-gray-600">
+        GTFS-RTとクラウドを活用したリアルタイム運行可視化
+      </p>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 space-y-20">
+
+    <!-- 目的 -->
+    <section data-aos="fade-up">
+      <h2 class="text-xl font-bold text-center mb-10">目的</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <!-- 1 -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition" data-aos="fade-up" data-aos-delay="100">
+          <h3 class="font-bold text-corporate mb-2">リアルタイム可視化</h3>
+          <p class="text-sm text-gray-600">
+            バスの現在位置を世界基準のGTFS-RTで公開し、
+            Googleマップやその他のサービスに連携できる形にする
+          </p>
+        </div>
+
+        <!-- 2 -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="font-bold text-corporate mb-2">低コスト構成</h3>
+          <p class="text-sm text-gray-600">
+            Firebaseと専用モジュールを使用し、
+            低コストかつ安全な運用を可能にする
+          </p>
+        </div>
+
+        <!-- 3 -->
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition" data-aos="fade-up" data-aos-delay="300">
+          <h3 class="font-bold text-corporate mb-2">運転手操作不要</h3>
+          <p class="text-sm text-gray-600">
+            自動起動、自動送信の車載器で、
+            運転手の操作を一切不要にする
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 画像（データフロー） -->
+    <section data-aos="fade-up">
+      <h2 class="text-xl font-bold text-center mb-8">データフロー</h2>
+
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <img 
+          src="images/dataflow.jpeg" 
+          alt="データフロー図"
+          class="mx-auto rounded-lg shadow-md"
+        >
+        <p class="text-sm text-gray-500 mt-4">
+          GPS → Cloud Functions → Firestore → GTFS-RT → Web表示
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="bg-gray-900 text-gray-400 py-10 text-center mt-20">
+    <p class="text-white font-bold">バスロケーション実証</p>
+    <p class="text-xs mt-2">&copy; 2026</p>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true,
+      duration: 800
+    });
+  </script>
+
+</body>
+</html>

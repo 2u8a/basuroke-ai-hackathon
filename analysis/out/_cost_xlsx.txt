@@ -1,0 +1,37 @@
+=== SHEET: シート1 ===
+イニシャルコスト |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+DCDCコンバーター | 1559.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+マイコン | 11550.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+simドングル | 6480.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+GPSモジュール | 3750.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+microSD | 980.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+CtoA | 799.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+計 | 25118 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ランニングコスト |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+SORACOM(SIM) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+additionalDataCapacityChargeForPlanDWithBundle-D-500MB | 500.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+bundleChargeForPlanDWithBundle-D-500MB | 350.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+firebase のお支払い |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+為替レート | 159.395 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+合計お支払い額 | 310.0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+請求先アカウント名 | 請求先アカウント ID | プロジェクト名 | プロジェクト ID | プロジェクト階層 | サービスの説明 | サービス ID | SKU の説明 | SKU ID | 消費モデルの説明 | クレジットの種類 | 費用のタイプ | 使用開始日 | 使用の終了日 | 使用量 | 使用量の単位 | 四捨五入前の費用（¥） | 費用（¥）
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | App Engine | F17B-412E-CB64 | Cloud Firestore Storage Japan | 725E-AC6D-1DF2 | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 16.336 | gibibyte month | 281.12391 | 281.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Run Functions | 29E7-DA93-CA13 | Cloud Run functions CPU (Request-based billing) in us-central1 | AD70-830E-0384 | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 480.093 | second | 1.836561 | 2.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Run Functions | 29E7-DA93-CA13 | Cloud Run functions Memory (Request-based billing) in us-central1 | 769A-FA0B-B049 | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 80.8 | gibibyte second | 0.032162 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Run Functions | 29E7-DA93-CA13 | Cloud Run Functions Network Internet Data Transfer Out Intercontinental (Excl Oceania and China and Africa) | FCAC-26E0-E5F5 | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-28 00:00:00 | 0.0 | gibibyte | 9.7e-05 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Firebase Hosting | 2662-232A-AC11 | Outgoing Bandwidth | 5DF2-5F92-77F0 | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 0.002 | gibibyte | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Firebase Hosting | 2662-232A-AC11 | Storage | 6B36-F770-533F | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 0.001 | gibibyte month | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Run Functions | 29E7-DA93-CA13 | Cloud Run Functions Invocations | 92DF-0F0E-630F | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 134.0 | count | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | App Engine | F17B-412E-CB64 | Cloud Firestore Read Ops Japan | 020A-8852-F68B | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 1226.0 | count | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | App Engine | F17B-412E-CB64 | Cloud Firestore Internet Data Transfer Out from Tokyo to APAC | 8D05-5F69-79E6 | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 0.003 | gibibyte | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | App Engine | F17B-412E-CB64 | Cloud Firestore Entity Writes Japan | AABE-78FC-30BB | Default |  | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 | 134.0 | count | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Run Functions | 29E7-DA93-CA13 | Cloud Run functions Memory (Request-based billing) in us-central1 | 769A-FA0B-B049 |  | SPENDING_BASED_DISCOUNT | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 |  |  | -0.032162 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Run Functions | 29E7-DA93-CA13 | Cloud Run functions CPU (Request-based billing) in us-central1 | AD70-830E-0384 |  | SPENDING_BASED_DISCOUNT | 使用量 | 2026-06-01 00:00:00 | 2026-06-30 00:00:00 |  |  | -1.836561 | -2.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Artifact Registry | 149C-F9EC-3994 | Artifact Registry Storage | 8502-299A-ABAF | Default |  | 使用量 | 2026-05-31 00:00:00 | 2026-06-30 00:00:00 | 0.586 | gibibyte month | 1.327386 | 1.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Storage | 95FF-2EF5-5EA1 | Standard Storage Tokyo | 1845-1496-2891 | Default |  | 使用量 | 2026-05-31 00:00:00 | 2026-06-30 00:00:00 | 0.002 | gibibyte month | 0.005804 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | BigQuery | 24E6-581D-38E5 | Active Logical Storage (asia-northeast1) | 709C-E503-30BF | Default |  | 使用量 | 2026-05-31 00:00:00 | 2026-06-30 00:00:00 | 0.184 | gibibyte month | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] | Cloud Storage | 95FF-2EF5-5EA1 | Standard Storage US Regional | E5F0-6A5D-7BAD | Default |  | 使用量 | 2026-05-31 00:00:00 | 2026-06-29 00:00:00 | 0.001 | gibibyte month | 0.0 | 0.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | mizuho-basuroke | mizuho-basuroke-f370e | [フォルダや組織に関連付けられていないプロジェクト] |  |  |  |  |  |  | 税金 |  |  |  |  | 28.045395 | 28.0
+Firebase のお支払い | 01D484-A6C191-0E2EB9 | [プロジェクトに対して固有でない課金] |  |  |  |  |  |  |  |  | 税金 |  |  |  |  | -0.045395 | 0.0
+ |  |  |  |  |  |  |  |  |  |  | 丸めエラー |  |  |  |  | -0.457197 | 0.0
+計 | 1160.0 |  |  |  |  |  |  |  |  |  | 合計 |  |  |  |  | 310.0 | 310.0

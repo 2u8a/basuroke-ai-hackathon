@@ -1,0 +1,18 @@
+=系統3・5 GTFS便=
+3	3_平日_1	service=平日	shape=R3_shape
+3	3_平日_2	service=平日	shape=R3_shape
+3	3_平日_3	service=平日	shape=R3_shape
+3	3_平日_4	service=平日	shape=R3_shape
+3	3_平日_5	service=平日	shape=R3_shape
+3	3_平日_6	service=平日	shape=R3_shape
+3	3_土休日_1	service=土休日	shape=R3_shape
+3	3_土休日_2	service=土休日	shape=R3_shape
+3	3_土休日_3	service=土休日	shape=R3_shape
+3	3_土休日_4	service=土休日	shape=R3_shape
+3	3_土休日_5	service=土休日	shape=R3_shape
+3	3_土休日_6	service=土休日	shape=R3_shape
+5	平日_08時46分_系統1_5a11d0	service=平日	shape=R5_shape
+5	平日_13時20分_系統1_5a11d0	service=平日	shape=R5_shape
+=calendar=
+平日	['monday', 'tuesday', 'wednesday', 'thursday', 'friday']	20241001-20270331
+土休日	['saturday', 'sunday']	20241001-20270331

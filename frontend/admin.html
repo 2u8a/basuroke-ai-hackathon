@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>瑞穂バスロケ — 管理ダッシュボード（便固定モデル v3）</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<!-- protobuf.js (for GTFS-RT decode) -->
+<script src="https://cdn.jsdelivr.net/npm/protobufjs@7.4.0/dist/protobuf.min.js"></script>
+
+<style>
+  :root {
+    --bg: #0f172a; --panel: #1e293b; --border: #334155;
+    --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8;
+    --ok: #34d399; --warn: #fbbf24; --err: #f87171;
+    --route1: #FF0000; --route2: #4488FF; --route3: #FFC000;
+    --route4: #CCFF66; --route5: #800080;
+    --st-idle: #475569;
+    --st-pre: #94a3b8;
+    --st-wait: #fbbf24;
+    --st-search: #38bdf8;
+    --st-locked: #34d399;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI','Hiragino Sans','Noto Sans JP',sans-serif;
+    font-size:13px; height:100vh; display:flex; flex-direction:column; overflow:hidden;
+  }
+
+  header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 16px; background:var(--panel); border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  header h1 { font-size:15px; font-weight:700; }
+  header h1 span { color:var(--accent); }
+  .conn-badge { display:flex; align-items:center; gap:6px; font-size:12px; }
+  .conn-dot { width:8px; height:8px; border-radius:50%; }
+  .conn-dot.on { background:var(--ok); box-shadow:0 0 6px var(--ok); }
+  .conn-dot.off { background:var(--err); }
+
+  .main { display:flex; flex:1; overflow:hidden; }
+  .map-wrap { flex:1; min-width:0; position:relative; }
+  #map { width:100%; height:100%; }
+  .map-overlay {
+    position:absolute; top:10px; left:50px; z-index:600;
+    background:rgba(15,23,42,.85); border:1px solid var(--border);
+    border-radius:8px; padding:8px 12px; font-size:11px; backdrop-filter:blur(4px);
+  }
+  .map-overlay .legend-row { display:flex; align-items:center; gap:6px; margin:2px 0; }
+  .legend-line { width:20px; height:3px; border-radius:2px; }
+
+  .side {
+    width:400px; flex-shrink:0; display:flex; flex-direction:column;
+    border-left:1px solid var(--border); overflow-y:auto;
+  }
+  .card { background:var(--panel); border-bottom:1px solid var(--border); padding:12px 14px; }
+  .card-title {
+    font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;
+  }
+  .card-title .icon { font-size:14px; }
+
+  .kv { display:grid; grid-template-columns:130px 1fr; gap:2px 8px; font-size:12px; }
+  .kv dt { color:var(--muted); }
+  .kv dd { font-family:'JetBrains Mono','SFMono-Regular',monospace; word-break:break-all; }
+  .kv-sep { grid-column: 1 / -1; border-top:1px dashed var(--border); margin:4px 0; }
+
+  /* state pipeline */
+  .pipeline {
+    display:flex; gap:4px; align-items:center; margin:6px 0 10px; flex-wrap:wrap;
+  }
+  .pipeline .step {
+    flex:1; min-width:60px; padding:6px 6px; border-radius:6px;
+    background:rgba(148,163,184,.1); border:1px solid var(--border);
+    color:var(--muted); font-size:10px; text-align:center; line-height:1.2;
+  }
+  .pipeline .step.active {
+    color:#0f172a; font-weight:700;
+    box-shadow:0 0 8px rgba(56,189,248,.4);
+  }
+  .pipeline .step.s-IDLE.active            { background:var(--st-idle);   color:#fff; }
+  .pipeline .step.s-PRE_SERVICE_MOVE.active{ background:var(--st-pre);    color:#0f172a; }
+  .pipeline .step.s-ORIGIN_WAITING.active  { background:var(--st-wait);   color:#0f172a; }
+  .pipeline .step.s-CANDIDATE_SEARCH.active{ background:var(--st-search); color:#0f172a; }
+  .pipeline .step.s-TRIP_LOCKED.active     { background:var(--st-locked); color:#0f172a; }
+
+  .state-badge {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:3px 10px; border-radius:6px; font-size:11px; font-weight:700;
+  }
+  .state-badge.IDLE             { background:rgba(71,85,105,.25);   color:var(--muted); border:1px solid var(--border); }
+  .state-badge.PRE_SERVICE_MOVE { background:rgba(148,163,184,.18); color:#cbd5e1;     border:1px solid var(--border); }
+  .state-badge.ORIGIN_WAITING   { background:rgba(251,191,36,.18);  color:var(--warn); border:1px solid var(--warn); }
+  .state-badge.CANDIDATE_SEARCH { background:rgba(56,189,248,.18);  color:var(--accent); border:1px solid var(--accent); }
+  .state-badge.TRIP_LOCKED      { background:rgba(52,211,153,.20);  color:var(--ok);   border:1px solid var(--ok); }
+
+  /* delay */
+  .delay-box { text-align:center; padding:10px 0 6px; }
+  .delay-value { font-size:42px; font-weight:800; line-height:1; }
+  .delay-unit { font-size:14px; color:var(--muted); }
+  .delay-label { font-size:11px; color:var(--muted); margin-top:4px; }
+
+  /* progress */
+  .progress-track {
+    height:6px; background:var(--border); border-radius:3px; margin:8px 0; position:relative;
+  }
+  .progress-fill {
+    height:100%; border-radius:3px; transition:width .6s ease;
+  }
+  .progress-expected {
+    position:absolute; top:-2px; width:2px; height:10px;
+    background:var(--accent); border-radius:1px;
+  }
+
+  /* candidate table */
+  .cand-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:4px; }
+  .cand-table th, .cand-table td {
+    padding:3px 6px; border-bottom:1px solid var(--border); text-align:left;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .cand-table th { color:var(--muted); font-weight:500; }
+  .cand-table tr.best td { background:rgba(56,189,248,.08); }
+  .cand-table tr.locked td { background:rgba(52,211,153,.12); color:var(--ok); }
+
+  /* feed */
+  .feed-row { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12px; }
+  .feed-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+  /* log */
+  .log-wrap {
+    flex-shrink:0; height:220px; border-top:1px solid var(--border);
+    display:flex; flex-direction:column;
+  }
+  .log-header {
+    padding:6px 14px; background:var(--panel); border-bottom:1px solid var(--border);
+    font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--muted); display:flex; align-items:center; gap:6px;
+  }
+  .log-scroll { flex:1; overflow-y:auto; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.6; }
+  .log-entry { padding:3px 14px; border-bottom:1px solid rgba(51,65,85,.4); display:flex; gap:8px; }
+  .log-entry:hover { background:rgba(56,189,248,.05); }
+  .log-time { color:var(--muted); flex-shrink:0; width:70px; }
+  .log-body { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .log-tag { font-size:10px; padding:1px 5px; border-radius:3px; flex-shrink:0; }
+  .tag-ok    { background:rgba(52,211,153,.15); color:var(--ok); }
+  .tag-ng    { background:rgba(248,113,113,.15); color:var(--err); }
+  .tag-trip  { background:rgba(56,189,248,.15); color:var(--accent); }
+  .tag-state { background:rgba(251,191,36,.18); color:var(--warn); }
+  .tag-locked{ background:rgba(52,211,153,.18); color:var(--ok); }
+
+  /* stop list */
+  .stop-summary {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;
+  }
+  .mini-stat {
+    border:1px solid var(--border); border-radius:8px; padding:8px 10px;
+    background:rgba(15,23,42,.35); min-height:56px;
+  }
+  .mini-stat-label {
+    font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;
+  }
+  .mini-stat-value {
+    font-size:12px; font-weight:700; line-height:1.35;
+  }
+  .stop-list {
+    max-height:340px; overflow-y:auto; padding-right:4px;
+  }
+  /* 縦型タイムライン（路線図風） */
+  .stop-timeline {
+    position:relative;
+    padding:4px 4px 8px 4px;
+    --rail-split: 0%;
+  }
+  .stop-timeline::before {
+    content:"";
+    position:absolute;
+    left:15px;
+    top:12px;
+    bottom:12px;
+    width:5px;
+    border-radius:3px;
+    background:linear-gradient(
+      180deg,
+      rgba(100,116,139,0.55) 0%,
+      rgba(100,116,139,0.55) var(--rail-split),
+      rgba(37,99,235,0.92) var(--rail-split),
+      rgba(37,99,235,0.92) 100%
+    );
+    z-index:0;
+    pointer-events:none;
+  }
+  .tl-row {
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:32px minmax(0,1fr);
+    gap:10px;
+    align-items:flex-start;
+    padding:8px 6px;
+    margin:2px 0;
+    border-radius:10px;
+    cursor:pointer;
+    transition:background .15s ease, opacity .15s ease, transform .12s ease;
+  }
+  .tl-row:hover { background:rgba(30,41,59,.45); }
+  .tl-axis {
+    display:flex;
+    justify-content:center;
+    padding-top:4px;
+  }
+  .tl-dot {
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#2563eb;
+    border:2px solid #1e3a8a;
+    box-sizing:border-box;
+    flex-shrink:0;
+  }
+  .tl-body { min-width:0; }
+  .tl-eta {
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.02em;
+    color:#93c5fd;
+    margin-bottom:2px;
+  }
+  .tl-name-row {
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    min-width:0;
+  }
+  .tl-seq {
+    flex-shrink:0;
+    font-size:10px;
+    font-weight:800;
+    color:#94a3b8;
+    min-width:1.4em;
+  }
+  .tl-name {
+    font-size:12px;
+    font-weight:700;
+    line-height:1.35;
+    color:#e2e8f0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .tl-meta {
+    margin-top:4px;
+    font-size:10px;
+    color:var(--muted);
+  }
+  .tl-row.tl-passed {
+    opacity:0.5;
+  }
+  .tl-row.tl-passed .tl-dot {
+    background:#64748b;
+    border-color:#475569;
+  }
+  .tl-row.tl-passed .tl-eta,
+  .tl-row.tl-passed .tl-name,
+  .tl-row.tl-passed .tl-seq { color:#94a3b8; }
+  .tl-row.tl-current {
+    background:rgba(56,189,248,.14);
+    box-shadow:inset 0 0 0 1px rgba(56,189,248,.35);
+  }
+  .tl-row.tl-current .tl-dot {
+    width:18px;
+    height:18px;
+    margin:-2px 0 0 0;
+    background:#38bdf8;
+    border:3px solid #e0f2fe;
+    box-shadow:0 0 16px rgba(56,189,248,.85);
+  }
+  .tl-row.tl-current .tl-eta { color:#7dd3fc; }
+  .tl-row.tl-current .tl-name { color:#f0f9ff; font-weight:800; }
+  .tl-row.tl-current .tl-seq { color:#38bdf8; }
+  .tl-row.tl-future .tl-dot {
+    background:#2563eb;
+    border-color:#1d4ed8;
+  }
+  .tl-row.tl-future .tl-eta { color:#93c5fd; }
+  .tl-row.tl-future .tl-name { color:#e2e8f0; }
+  .stop-empty { color:var(--muted); font-size:12px; padding:8px 0; }
+
+  @media (max-width:900px) {
+    .main { flex-direction:column; }
+    .side { width:100%; max-height:50vh; }
+    .map-wrap { min-height:40vh; }
+    .log-wrap { height:160px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚌 <span>瑞穂バスロケ</span> 管理ダッシュボード <small style="color:var(--muted);font-weight:400;font-size:11px;">便固定モデル v3.3</small></h1>
+  <div class="conn-badge">
+    <div class="conn-dot off" id="connDot"></div>
+    <span id="connLabel">接続中...</span>
+    <span style="margin-left:12px;color:var(--muted)" id="clockLabel">--:--:--</span>
+  </div>
+</header>
+
+<div class="main">
+  <div class="map-wrap">
+    <div id="map"></div>
+    <div class="map-overlay">
+      <div class="legend-row"><div class="legend-line" style="background:var(--route1)"></div>元狭山コース</div>
+      <div class="legend-row"><div class="legend-line" style="background:var(--route2)"></div>元狭山・長岡コース</div>
+      <div class="legend-row"><div class="legend-line" style="background:var(--route3)"></div>石畑・殿ケ谷コース</div>
+      <div class="legend-row"><div class="legend-line" style="background:var(--route4)"></div>ふれあいセンターコース</div>
+      <div class="legend-row"><div class="legend-line" style="background:var(--route5)"></div>箱根ヶ崎駅東口循環</div>
+    </div>
+  </div>
+
+  <div class="side">
+
+    <!-- 状態パネル -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🧭</span> 車両ステート</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span class="state-badge IDLE" id="stateBadge">IDLE</span>
+        <span id="stateReason" style="font-size:11px;color:var(--muted);">--</span>
+      </div>
+
+      <div class="pipeline" id="pipeline">
+        <div class="step s-IDLE">IDLE</div>
+        <div class="step s-PRE_SERVICE_MOVE">回送中</div>
+        <div class="step s-ORIGIN_WAITING">始発待機</div>
+        <div class="step s-CANDIDATE_SEARCH">候補探索</div>
+        <div class="step s-TRIP_LOCKED">便固定</div>
+      </div>
+
+      <dl class="kv">
+        <dt>origin_stop</dt><dd id="originStop">--</dd>
+        <dt>acc_on_at</dt><dd id="accOnAt">--</dd>
+        <dt>zone_entered</dt><dd id="zoneEnteredAt">--</dd>
+        <dt>window_opened</dt><dd id="windowOpenedAt">--</dd>
+        <dt>locked_at</dt><dd id="lockedAt">--</dd>
+        <dt>locked_trip</dt><dd id="lockedTrip">--</dd>
+        <dt>lock_reason</dt><dd id="lockReason">--</dd>
+        <dt>candidate_gps_count</dt><dd id="candGpsCount">--</dd>
+      </dl>
+    </div>
+
+    <!-- 候補便スコア（CANDIDATE_SEARCH中用） -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> 候補便スコア</div>
+      <table class="cand-table" id="candTable">
+        <thead>
+          <tr>
+            <th>trip_id</th>
+            <th>dep</th>
+            <th>累積</th>
+            <th>誤差(m)</th>
+            <th>n</th>
+          </tr>
+        </thead>
+        <tbody id="candTbody">
+          <tr><td colspan="5" style="color:var(--muted);">候補便なし</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 遅延 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⏱</span> 遅延判定 (TRIP_LOCKED 時のみ)</div>
+      <div class="delay-box">
+        <div class="delay-value" id="delayValue">--</div>
+        <div class="delay-unit">分</div>
+        <div class="delay-label" id="delayLabel">便確定前</div>
+      </div>
+    </div>
+
+    <!-- GPS -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📡</span> GPS受信</div>
+      <dl class="kv">
+        <dt>lat / lon</dt><dd id="gpsLatLon">--</dd>
+        <dt>accuracy</dt><dd id="gpsAccuracy">--</dd>
+        <dt>speed</dt><dd id="gpsSpeed">--</dd>
+        <dt>heading</dt><dd id="gpsHeading">--</dd>
+        <dt>受信時刻</dt><dd id="gpsReceivedAt">--</dd>
+        <dt>鮮度</dt><dd id="gpsFreshness">--</dd>
+      </dl>
+    </div>
+
+    <!-- 便詳細 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🚌</span> 便詳細 (TRIP_LOCKED時)</div>
+      <dl class="kv">
+        <dt>trip_id</dt><dd id="tripId">--</dd>
+        <dt>route</dt><dd id="tripRoute">--</dd>
+        <dt>status</dt><dd id="tripStatus">--</dd>
+        <dt>nearest_stop</dt><dd id="tripNearestStop">--</dd>
+        <dt>current_dist</dt><dd id="tripCurrentDist">--</dd>
+        <dt>expected_dist</dt><dd id="tripExpectedDist">--</dd>
+        <dt>distance_error</dt><dd id="tripDistError">--</dd>
+        <dt>offset (横ずれ)</dt><dd id="tripOffset">--</dd>
+        <dt>delta_from_prev</dt><dd id="tripDelta">--</dd>
+      </dl>
+      <div style="margin-top:8px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">ルート進捗</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:0%;background:var(--accent);"></div>
+          <div class="progress-expected" id="progressExpected" style="left:0%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);">
+          <span>始点</span>
+          <span id="progressPct">--%</span>
+          <span>終点</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 通過予定停留所 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🚏</span> 通過予定停留所</div>
+      <div class="stop-summary">
+        <div class="mini-stat">
+          <div class="mini-stat-label">現在</div>
+          <div class="mini-stat-value" id="stopSummaryCurrent">--</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">次停留所</div>
+          <div class="mini-stat-value" id="stopSummaryNext">--</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">進捗</div>
+          <div class="mini-stat-value" id="stopSummaryProgress">--</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">残り停留所</div>
+          <div class="mini-stat-value" id="stopSummaryRemaining">--</div>
+        </div>
+      </div>
+      <div id="stopListPanel" class="stop-list">
+        <div class="stop-empty">TRIP_LOCKED 時に停留所一覧を表示します</div>
+      </div>
+    </div>
+
+    <!-- GTFS-RT -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📦</span> GTFS-Realtime feed</div>
+      <div id="feedPanel">
+        <div class="feed-row">
+          <div class="feed-dot" id="feedDot" style="background:var(--muted)"></div>
+          <span id="feedStatus">未取得</span>
+        </div>
+        <dl class="kv" style="margin-top:6px;">
+          <dt>timestamp</dt><dd id="feedTimestamp">--</dd>
+          <dt>entities</dt><dd id="feedEntities">--</dd>
+          <dt>VehiclePos</dt><dd id="feedVP">--</dd>
+          <dt>TripUpdate</dt><dd id="feedTU">--</dd>
+          <dt>feed size</dt><dd id="feedSize">--</dd>
+          <dt>polling</dt><dd id="feedPolling">10秒間隔</dd>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="log-wrap">
+  <div class="log-header">📋 GPSログ (リアルタイム)</div>
+  <div class="log-scroll" id="logScroll"></div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const FIREBASE_CONFIG = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "mizuho-basuroke-f370e.firebaseapp.com",
+  projectId:         "mizuho-basuroke-f370e",
+  storageBucket:     "mizuho-basuroke-f370e.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID",
+};
+
+const VEHICLE_ID   = "mizuho-bus-01";
+const GTFS_RT_URL  = "https://us-central1-mizuho-basuroke-f370e.cloudfunctions.net/gtfs_rt";
+const FEED_POLL_MS = 10000;
+const ROUTE_COLORS = { "1": "#FF0000", "2": "#4488FF", "3": "#FFC000", "4": "#CCFF66", "5": "#800080" };
+
+const STATE_LABEL = {
+  "IDLE":             "IDLE / 停車中",
+  "PRE_SERVICE_MOVE": "PRE_SERVICE_MOVE / 回送中",
+  "ORIGIN_WAITING":   "ORIGIN_WAITING / 始発待機",
+  "CANDIDATE_SEARCH": "CANDIDATE_SEARCH / 候補絞込中",
+  "TRIP_LOCKED":      "TRIP_LOCKED / 便固定中",
+};
+
+const STATE_ORDER = ["IDLE","PRE_SERVICE_MOVE","ORIGIN_WAITING","CANDIDATE_SEARCH","TRIP_LOCKED"];
+
+let MAP_DATA = null;
+let db = null;
+let unsubLatest = null;
+let unsubLogs = null;
+let lastState = null;
+
+// ============================================================
+// Firebase init
+// ============================================================
+function initFirebase() {
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.firestore();
+    document.getElementById("connDot").classList.replace("off", "on");
+    document.getElementById("connLabel").textContent = "Firestore 接続済";
+    startListeners();
+  } catch(e) {
+    document.getElementById("connLabel").textContent = "Firebase初期化エラー";
+    console.error(e);
+  }
+}
+
+// ============================================================
+// Firestore listeners
+// ============================================================
+function startListeners() {
+  unsubLatest = db.doc(`vehicles/${VEHICLE_ID}/state/latest`).onSnapshot(snap => {
+    if (!snap.exists) return;
+    lastState = snap.data();
+    updateAll(lastState);
+  }, err => {
+    console.error("latest listener error:", err);
+    document.getElementById("connDot").classList.replace("on", "off");
+    document.getElementById("connLabel").textContent = "リスナーエラー";
+  });
+
+  unsubLogs = db.collection("gps_logs")
+    .orderBy("timestamp_unix", "desc")
+    .limit(20)
+    .onSnapshot(snap => {
+      const logs = [];
+      snap.forEach(doc => logs.push(doc.data()));
+      updateLogPanel(logs);
+    }, err => console.error("logs listener:", err));
+}
+
+function updateAll(s) {
+  updateGpsPanel(s);
+  updateStatePanel(s);
+  updateCandidatePanel(s);
+  updateTripPanel(s);
+  updateStopListPanel(s);
+  updateMapPosition(s);
+}
+
+// ============================================================
+// helpers
+// ============================================================
+function fmtUnix(unix) {
+  if (!unix) return "--";
+  const d = new Date(Number(unix) * 1000);
+  return d.toLocaleTimeString("ja-JP", { timeZone: "Asia/Tokyo", hour12: false });
+}
+function fmtSec(sec) {
+  if (sec == null) return "--";
+  const h = Math.floor(sec/3600).toString().padStart(2,"0");
+  const m = Math.floor((sec%3600)/60).toString().padStart(2,"0");
+  return `${h}:${m}`;
+}
+function escHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+function fmtEtaArrival(sec) {
+  if (sec == null || !Number.isFinite(Number(sec))) return "--";
+  return fmtSec(Number(sec)) + "着";
+}
+function setStopSummary(currentText = "--", nextText = "--", progressText = "--", remainingText = "--") {
+  document.getElementById("stopSummaryCurrent").textContent = currentText;
+  document.getElementById("stopSummaryNext").textContent = nextText;
+  document.getElementById("stopSummaryProgress").textContent = progressText;
+  document.getElementById("stopSummaryRemaining").textContent = remainingText;
+}
+
+// ============================================================
+// State panel
+// ============================================================
+function updateStatePanel(s) {
+  const lock = s.lock || {};
+  const stateName = lock.lock_state || "IDLE";
+
+  // badge
+  const badge = document.getElementById("stateBadge");
+  badge.textContent = stateName;
+  badge.className = "state-badge " + stateName;
+
+  document.getElementById("stateReason").textContent = STATE_LABEL[stateName] || stateName;
+
+  // pipeline
+  const steps = document.querySelectorAll("#pipeline .step");
+  const idx = STATE_ORDER.indexOf(stateName);
+  steps.forEach((el, i) => {
+    el.classList.remove("active");
+    if (i === idx) el.classList.add("active");
+  });
+
+  document.getElementById("originStop").textContent      = lock.origin_stop_id || "--";
+  document.getElementById("accOnAt").textContent         = fmtUnix(lock.acc_on_at);
+  document.getElementById("zoneEnteredAt").textContent   = fmtUnix(lock.origin_zone_entered_at);
+  document.getElementById("windowOpenedAt").textContent  = fmtUnix(lock.departure_window_opened_at);
+  document.getElementById("lockedAt").textContent        = fmtUnix(lock.lock_confirmed_at);
+  document.getElementById("lockedTrip").textContent      = lock.locked_trip_id || "--";
+  document.getElementById("lockReason").textContent      = lock.lock_reason || "--";
+  document.getElementById("candGpsCount").textContent    = lock.candidate_gps_count != null ? String(lock.candidate_gps_count) : "--";
+}
+
+// ============================================================
+// Candidate panel
+// ============================================================
+function updateCandidatePanel(s) {
+  const lock = s.lock || {};
+  const scores = lock.candidate_scores || {};
+  const lockedId = lock.locked_trip_id;
+  const tbody = document.getElementById("candTbody");
+  const rows = Object.values(scores).sort((a,b) => (a.score||0) - (b.score||0));
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--muted);">候補便なし</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.slice(0, 8).map((c, i) => {
+    const isLocked = c.trip_id === lockedId;
+    const cls = isLocked ? "locked" : (i === 0 ? "best" : "");
+    const dep = fmtSec(c.scheduled_departure_sec);
+    const score = c.score != null ? Number(c.score).toFixed(0) : "--";
+    const lastErr = c.last_distance_error_m != null ? Number(c.last_distance_error_m).toFixed(0) : "--";
+    return `<tr class="${cls}">
+      <td>${c.trip_id}</td>
+      <td>${dep}</td>
+      <td>${score}</td>
+      <td>${lastErr}</td>
+      <td>${c.gps_count || 0}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ============================================================
+// GPS panel
+// ============================================================
+function updateGpsPanel(s) {
+  const lat = s.lat, lon = s.lon;
+  document.getElementById("gpsLatLon").textContent =
+    lat != null ? `${Number(lat).toFixed(6)}, ${Number(lon).toFixed(6)}` : "--";
+  document.getElementById("gpsAccuracy").textContent = s.accuracy != null ? `${s.accuracy} m` : "--";
+  document.getElementById("gpsSpeed").textContent    = s.speed != null ? `${Number(s.speed).toFixed(1)} m/s` : "--";
+  document.getElementById("gpsHeading").textContent  = s.heading != null ? `${s.heading}°` : "--";
+  document.getElementById("gpsReceivedAt").textContent = s.server_received_at || "--";
+
+  const age = s.timestamp_unix ? Math.round(Date.now()/1000) - s.timestamp_unix : null;
+  const el = document.getElementById("gpsFreshness");
+  if (age != null) {
+    el.textContent = `${age}秒前`;
+    el.style.color = age < 30 ? "var(--ok)" : age < 60 ? "var(--warn)" : "var(--err)";
+  } else {
+    el.textContent = "--";
+  }
+}
+
+// ============================================================
+// Trip panel
+// ============================================================
+function updateTripPanel(s) {
+  const lock = s.lock || {};
+  const t = (lock.lock_state === "TRIP_LOCKED") ? (s.trip || null) : null;
+
+  if (!t || !t.trip_id) {
+    document.getElementById("tripId").textContent          = "--";
+    document.getElementById("tripRoute").textContent       = "--";
+    document.getElementById("tripStatus").textContent      = "--";
+    document.getElementById("tripNearestStop").textContent = "--";
+    document.getElementById("tripCurrentDist").textContent = "--";
+    document.getElementById("tripExpectedDist").textContent= "--";
+    document.getElementById("tripDistError").textContent   = "--";
+    document.getElementById("tripOffset").textContent      = "--";
+    document.getElementById("tripDelta").textContent       = "--";
+
+    document.getElementById("delayValue").textContent = "--";
+    document.getElementById("delayValue").style.color = "var(--muted)";
+    document.getElementById("delayLabel").textContent = lock.lock_state ? STATE_LABEL[lock.lock_state] : "便確定前";
+    document.getElementById("progressFill").style.width = "0%";
+    document.getElementById("progressPct").textContent = "--%";
+    return;
+  }
+
+  document.getElementById("tripId").textContent     = t.trip_id;
+  document.getElementById("tripRoute").innerHTML    =
+    `<span style="color:${ROUTE_COLORS[t.route_id]||'#fff'}">${t.route_name || t.route_id}</span>`;
+  document.getElementById("tripStatus").textContent = t.vehicle_stop_status || "--";
+  document.getElementById("tripNearestStop").textContent =
+    `${t.nearest_stop_name || "--"} (${t.nearest_stop_id || ""})`;
+  document.getElementById("tripCurrentDist").textContent =
+    t.current_distance_m != null ? `${Number(t.current_distance_m).toFixed(0)} m` : "--";
+  document.getElementById("tripExpectedDist").textContent =
+    t.expected_distance_m != null ? `${Number(t.expected_distance_m).toFixed(0)} m` : "--";
+
+  const err = t.distance_error_m;
+  const errEl = document.getElementById("tripDistError");
+  errEl.textContent = err != null ? `${Number(err).toFixed(0)} m` : "--";
+  if (err != null) errEl.style.color = err < 200 ? "var(--ok)" : err < 500 ? "var(--warn)" : "var(--err)";
+
+  document.getElementById("tripOffset").textContent =
+    t.projection_offset_m != null ? `${Number(t.projection_offset_m).toFixed(1)} m` : "--";
+  document.getElementById("tripDelta").textContent =
+    t.delta_from_prev_m != null ? `${Number(t.delta_from_prev_m).toFixed(1)} m` : "--";
+
+  // delay
+  const delaySec = t.delay_sec || 0;
+  const delayMin = (delaySec / 60).toFixed(1);
+  const dvEl = document.getElementById("delayValue");
+  dvEl.textContent = (delaySec >= 0 ? "+" : "") + delayMin;
+  dvEl.style.color = Math.abs(delaySec) < 60 ? "var(--ok)" : Math.abs(delaySec) < 180 ? "var(--warn)" : "var(--err)";
+  document.getElementById("delayLabel").textContent =
+    delaySec > 60 ? "遅延" : delaySec < -60 ? "早着" : "定時";
+
+  // progress
+  const maxDist = Math.max(t.current_distance_m || 0, t.expected_distance_m || 0, 1) * 1.3 + 500;
+  const curPct = Math.min(100, Math.max(0, (t.current_distance_m || 0) / maxDist * 100));
+  const expPct = Math.min(100, Math.max(0, (t.expected_distance_m || 0) / maxDist * 100));
+  document.getElementById("progressFill").style.width = curPct + "%";
+  document.getElementById("progressFill").style.background = ROUTE_COLORS[t.route_id] || "var(--accent)";
+  document.getElementById("progressExpected").style.left = expPct + "%";
+  document.getElementById("progressPct").textContent = curPct.toFixed(0) + "%";
+}
+
+// ============================================================
+// Stop list
+// ============================================================
+function updateStopListPanel(s) {
+  const panel = document.getElementById("stopListPanel");
+  const lock = s.lock || {};
+  const trip = (lock.lock_state === "TRIP_LOCKED") ? (s.trip || null) : null;
+
+  if (!trip || !trip.trip_id) {
+    panel.innerHTML = '<div class="stop-empty">TRIP_LOCKED 時に停留所一覧を表示します</div>';
+    setStopSummary();
+    updateStopMarkerHighlights([], null, null);
+    return;
+  }
+
+  const progress = Array.isArray(trip.stops_progress) ? trip.stops_progress : [];
+  if (!progress.length) {
+    panel.innerHTML = '<div class="stop-empty">stops_progress 未配信です（バックエンド main.py 更新後の GPS 受信で表示されます）</div>';
+    const curName = trip.nearest_stop_name || trip.nearest_stop_id || '--';
+    setStopSummary(curName, '--', '--', '--');
+    updateStopMarkerHighlights([], trip.nearest_stop_id || null, null);
+    return;
+  }
+
+  const currentRow = progress.find(row => row.status === "current") || null;
+  const nextRow = progress.find(row => row.status === "future") || null;
+  const futureCount = progress.filter(row => row.status === "future").length;
+  const curIdx = progress.findIndex(row => row.status === "current");
+  const progressText = curIdx >= 0 ? `${curIdx + 1} / ${progress.length}` : `-- / ${progress.length}`;
+
+  setStopSummary(
+    currentRow ? `${currentRow.stop_sequence}. ${currentRow.stop_name}` : '--',
+    nextRow ? `${nextRow.stop_sequence}. ${nextRow.stop_name}` : '終点',
+    progressText,
+    `${futureCount} 件`
+  );
+
+  const passedOnly = progress.filter(row => row.status === "passed").length;
+  const splitPct = progress.length ? Math.min(100, (passedOnly / progress.length) * 100) : 0;
+
+  const rowsHtml = progress.map(row => {
+    const st = row.status || "future";
+    const cls = ["tl-row", st === "passed" ? "tl-passed" : "", st === "current" ? "tl-current" : "", st === "future" ? "tl-future" : ""].filter(Boolean).join(" ");
+    const sid = row.stop_id != null ? String(row.stop_id) : "";
+    const eta = fmtEtaArrival(row.estimated_arrival_sec);
+    const sched = row.scheduled_arrival_sec != null ? `定刻 ${fmtSec(Number(row.scheduled_arrival_sec))}` : "";
+    const delayNote = trip.holding_at_origin ? "始発保留中（定刻表示）" : "";
+    const metaParts = [];
+    if (sid) metaParts.push(`ID: ${escHtml(sid)}`);
+    if (sched) metaParts.push(escHtml(sched));
+    if (delayNote) metaParts.push(delayNote);
+    return `<div class="${cls}" data-stop-id="${escHtml(sid)}">
+      <div class="tl-axis"><span class="tl-dot" aria-hidden="true"></span></div>
+      <div class="tl-body">
+        <div class="tl-eta">${escHtml(eta)}</div>
+        <div class="tl-name-row">
+          <span class="tl-seq">${row.stop_sequence}</span>
+          <span class="tl-name">${escHtml(row.stop_name || sid || "--")}</span>
+        </div>
+        ${metaParts.length ? `<div class="tl-meta">${metaParts.join(" · ")}</div>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  panel.innerHTML = `<div class="stop-timeline" style="--rail-split:${splitPct}%">${rowsHtml}</div>`;
+
+  panel.querySelectorAll(".tl-row").forEach(el => {
+    el.addEventListener("click", () => {
+      const stopId = el.dataset.stopId;
+      if (stopId) panToStop(stopId);
+    });
+  });
+
+  const currentStopId = currentRow && currentRow.stop_id != null ? String(currentRow.stop_id) : null;
+  const nextStopId = nextRow && nextRow.stop_id != null ? String(nextRow.stop_id) : null;
+  updateStopMarkerHighlights(progress, currentStopId, nextStopId);
+}
+
+// ============================================================
+// Log
+// ============================================================
+function updateLogPanel(logs) {
+  const el = document.getElementById("logScroll");
+  const html = logs.map(l => {
+    const t = l.server_received_at
+      ? l.server_received_at.split("T")[1]?.split("+")[0]?.substring(0,8)
+      : "--";
+    const acc = l.accepted;
+    const tag = acc
+      ? '<span class="log-tag tag-ok">OK</span>'
+      : `<span class="log-tag tag-ng">NG:${l.reject_reason || ""}</span>`;
+
+    let stateTag = "";
+    const ls = l.lock?.lock_state;
+    if (ls) {
+      const cls = ls === "TRIP_LOCKED" ? "tag-locked" : "tag-state";
+      stateTag = `<span class="log-tag ${cls}">${ls}</span>`;
+    }
+
+    let tripTag = "";
+    if (l.trip_match && l.trip_match.trip_id) {
+      const tm = l.trip_match;
+      const dErr = tm.distance_error_m != null ? Number(tm.distance_error_m).toFixed(0) : "?";
+      tripTag = `<span class="log-tag tag-trip">${tm.trip_id} Δ${dErr}m</span>`;
+    } else if (l.lock?.locked_trip_id) {
+      tripTag = `<span class="log-tag tag-trip">${l.lock.locked_trip_id}</span>`;
+    }
+
+    const body = `lat=${Number(l.lat||0).toFixed(5)} lon=${Number(l.lon||0).toFixed(5)} acc=${l.accuracy ?? "?"}`;
+    return `<div class="log-entry">
+      <span class="log-time">${t}</span>
+      ${tag}${stateTag}${tripTag}
+      <span class="log-body">${body}</span>
+    </div>`;
+  }).join("");
+  el.innerHTML = html;
+}
+
+// ============================================================
+// Map
+// ============================================================
+let map, busMarker, busCircle, shapeLayers = [], stopMarkers = [];
+let stopMarkerById = new Map();
+
+function initMap() {
+  map = L.map("map", { zoomControl: true }).setView([35.778, 139.350], 14);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19,
+  }).addTo(map);
+
+  const busIcon = L.divIcon({
+    className: "",
+    html: '<div style="background:#38bdf8;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 8px rgba(56,189,248,.6);"></div>',
+    iconSize: [16,16], iconAnchor: [8,8],
+  });
+  busMarker = L.marker([35.778, 139.350], { icon: busIcon, zIndex: 1000 }).addTo(map);
+  busCircle = L.circle([35.778, 139.350], { radius: 30, color: "#38bdf8", fillOpacity: 0.1, weight: 1 }).addTo(map);
+  busMarker.setOpacity(0);
+  busCircle.setStyle({ opacity: 0 });
+  loadMapData();
+}
+
+async function loadMapData() {
+  try {
+    const resp = await fetch("gtfs_map_data.json");
+    MAP_DATA = await resp.json();
+    drawRoutes();
+    drawStops();
+    if (lastState) updateAll(lastState);
+  } catch(e) {
+    console.warn("gtfs_map_data.json load failed", e);
+  }
+}
+
+function drawRoutes() {
+  if (!MAP_DATA) return;
+  for (const [routeId, shapeIds] of Object.entries(MAP_DATA.route_shapes)) {
+    const color = ROUTE_COLORS[routeId] || "#888";
+    for (const sid of shapeIds) {
+      const coords = MAP_DATA.shapes[sid];
+      if (!coords) continue;
+      shapeLayers.push(L.polyline(coords, { color, weight: 3, opacity: 0.6 }).addTo(map));
+    }
+  }
+}
+
+function drawStops() {
+  if (!MAP_DATA) return;
+  const drawn = new Map();
+  stopMarkerById = new Map();
+  for (const [sid, s] of Object.entries(MAP_DATA.stops)) {
+    const key = `${Number(s.lat).toFixed(6)}_${Number(s.lon).toFixed(6)}`;
+    let m = drawn.get(key);
+    if (!m) {
+      m = L.circleMarker([s.lat, s.lon], {
+        radius: 4, color: "#fff", fillColor: "#475569", fillOpacity: 0.8, weight: 1,
+      }).addTo(map);
+      m._stopNames = new Set();
+      drawn.set(key, m);
+      stopMarkers.push(m);
+    }
+    m._stopNames.add(s.name || sid);
+    m.bindTooltip(Array.from(m._stopNames).join(" / "), { direction: "top", offset: [0, -6], className: "stop-tooltip" });
+    stopMarkerById.set(sid, m);
+  }
+}
+
+function panToStop(stopId) {
+  const marker = stopMarkerById.get(stopId);
+  if (!marker || !map) return;
+  map.panTo(marker.getLatLng(), { animate: true, duration: 0.4 });
+  if (marker.openTooltip) marker.openTooltip();
+}
+
+function updateStopMarkerHighlights(stops, currentStopId, nextStopId) {
+  stopMarkers.forEach(marker => {
+    marker.setStyle({ radius: 4, color: "#fff", fillColor: "#475569", fillOpacity: 0.8, weight: 1 });
+  });
+  stops.forEach(stop => {
+    const marker = stopMarkerById.get(stop.stop_id);
+    if (marker) {
+      marker.setStyle({ radius: 5, color: "#cbd5e1", fillColor: "#1e293b", fillOpacity: 0.95, weight: 2 });
+    }
+  });
+  if (nextStopId) {
+    const marker = stopMarkerById.get(nextStopId);
+    if (marker) {
+      marker.setStyle({ radius: 6, color: "#fde68a", fillColor: "#f59e0b", fillOpacity: 1, weight: 2 });
+    }
+  }
+  if (currentStopId) {
+    const marker = stopMarkerById.get(currentStopId);
+    if (marker) {
+      marker.setStyle({ radius: 7, color: "#e0f2fe", fillColor: "#38bdf8", fillOpacity: 1, weight: 3 });
+    }
+  }
+}
+
+function updateMapPosition(s) {
+  if (s.lat == null || s.lon == null) return;
+  const lat = Number(s.lat), lon = Number(s.lon);
+  busMarker.setLatLng([lat, lon]).setOpacity(1);
+  busCircle.setLatLng([lat, lon]);
+  busCircle.setRadius(Number(s.accuracy || 30)).setStyle({ opacity: 0.5 });
+
+  const lockState = (s.lock && s.lock.lock_state) || "IDLE";
+  const trip = s.trip;
+  const routeId = (lockState === "TRIP_LOCKED" && trip) ? trip.route_id : null;
+  const baseColor = ROUTE_COLORS[routeId] || (lockState === "CANDIDATE_SEARCH" ? "#38bdf8" : "#94a3b8");
+
+  busMarker.setIcon(L.divIcon({
+    className: "",
+    html: `<div style="background:${baseColor};width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 10px ${baseColor};"></div>`,
+    iconSize: [16,16], iconAnchor: [8,8],
+  }));
+
+  let popup = `<b>${VEHICLE_ID}</b><br>state: ${lockState}<br>${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  if (lockState === "TRIP_LOCKED" && trip && trip.trip_id) {
+    const dm = ((trip.delay_sec||0) / 60).toFixed(1);
+    popup += `<br>便: ${trip.trip_id}<br>遅延: ${dm}分<br>最寄停: ${trip.nearest_stop_name || ""}`;
+  } else if (lockState === "CANDIDATE_SEARCH") {
+    popup += `<br>候補便: ${(s.lock.candidate_trips||[]).length}件`;
+  } else if (lockState === "ORIGIN_WAITING") {
+    popup += `<br>始発待機: ${s.lock.origin_stop_id || "--"}`;
+  }
+  busMarker.bindPopup(popup);
+}
+
+// ============================================================
+// GTFS-RT polling
+// ============================================================
+let feedProtoRoot = null;
+
+async function initProto() {
+  const protoContent = `
+syntax = "proto2";
+package transit_realtime;
+message FeedMessage { required FeedHeader header = 1; repeated FeedEntity entity = 2; }
+message FeedHeader { required string gtfs_realtime_version = 1; optional uint64 timestamp = 5; }
+message FeedEntity { required string id = 1; optional TripUpdate trip_update = 3; optional VehiclePosition vehicle = 4; }
+message TripUpdate { optional TripDescriptor trip = 1; optional VehicleDescriptor vehicle = 3; repeated StopTimeUpdate stop_time_update = 2; optional uint64 timestamp = 4;
+  message StopTimeUpdate { optional uint32 stop_sequence = 1; optional string stop_id = 4; optional StopTimeEvent arrival = 2; optional StopTimeEvent departure = 3; }
+  message StopTimeEvent { optional int32 delay = 1; optional int64 time = 2; }
+}
+message VehiclePosition { optional TripDescriptor trip = 1; optional VehicleDescriptor vehicle = 8; optional Position position = 2; optional uint32 current_stop_sequence = 3; optional uint32 current_status = 4; optional uint64 timestamp = 5; }
+message Position { required float latitude = 1; required float longitude = 2; optional float bearing = 3; optional float speed = 5; }
+message TripDescriptor { optional string trip_id = 1; optional string route_id = 5; }
+message VehicleDescriptor { optional string id = 1; optional string label = 2; }
+`;
+  try { feedProtoRoot = protobuf.parse(protoContent).root; }
+  catch(e) { console.error("Proto parse error:", e); }
+}
+
+async function pollFeed() {
+  if (!feedProtoRoot) return;
+  const FeedMessage = feedProtoRoot.lookupType("transit_realtime.FeedMessage");
+  try {
+    const resp = await fetch(GTFS_RT_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const buf = await resp.arrayBuffer();
+    const msg = FeedMessage.decode(new Uint8Array(buf));
+
+    document.getElementById("feedDot").style.background = "var(--ok)";
+    document.getElementById("feedStatus").textContent = "正常取得";
+    document.getElementById("feedSize").textContent = `${buf.byteLength} bytes`;
+
+    const ts = msg.header?.timestamp;
+    if (ts) document.getElementById("feedTimestamp").textContent =
+      new Date(Number(ts) * 1000).toLocaleTimeString("ja-JP");
+
+    const entities = msg.entity || [];
+    document.getElementById("feedEntities").textContent = entities.length;
+    let vp=0, tu=0;
+    for (const e of entities) { if (e.vehicle) vp++; if (e.tripUpdate) tu++; }
+    document.getElementById("feedVP").textContent = vp;
+    const tuEl = document.getElementById("feedTU");
+    tuEl.textContent = tu;
+    tuEl.style.color = tu > 0 ? "var(--ok)" : "var(--muted)";
+  } catch(e) {
+    console.error("GTFS-RT fetch/decode error:", e);
+    document.getElementById("feedDot").style.background = "var(--err)";
+    document.getElementById("feedStatus").textContent = `エラー: ${e.message}`;
+    document.getElementById("feedSize").textContent = "--";
+    document.getElementById("feedTimestamp").textContent = "--";
+    document.getElementById("feedEntities").textContent = "--";
+    document.getElementById("feedVP").textContent = "--";
+    document.getElementById("feedTU").textContent = "--";
+  }
+}
+
+// ============================================================
+// Init
+// ============================================================
+function updateClock() {
+  document.getElementById("clockLabel").textContent =
+    new Date().toLocaleTimeString("ja-JP", { timeZone: "Asia/Tokyo", hour12: false });
+}
+
+let feedInterval = null;
+function startApp() {
+  if (!unsubLatest && !unsubLogs) startListeners();
+  pollFeed();
+  feedInterval = setInterval(pollFeed, FEED_POLL_MS);
+}
+function stopApp() {
+  if (unsubLatest) { unsubLatest(); unsubLatest = null; }
+  if (unsubLogs) { unsubLogs(); unsubLogs = null; }
+  if (feedInterval) { clearInterval(feedInterval); feedInterval = null; }
+  document.getElementById("connDot").classList.replace("on", "off");
+  document.getElementById("connLabel").textContent = "スリープ中 (タブ非表示)";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initMap();
+  initFirebase();
+  initProto().then(() => startApp());
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(() => { if (lastState) updateGpsPanel(lastState); }, 1000);
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopApp();
+  } else {
+    document.getElementById("connDot").classList.replace("off", "on");
+    document.getElementById("connLabel").textContent = "Firestore 接続済";
+    startApp();
+  }
+});
+</script>
+
+<style>
+.stop-tooltip {
+  background: rgba(15,23,42,.9) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #475569 !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  padding: 2px 6px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4) !important;
+}
+.stop-tooltip::before { border-top-color: rgba(15,23,42,.9) !important; }
+</style>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

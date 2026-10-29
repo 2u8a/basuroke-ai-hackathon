@@ -1,0 +1,14 @@
+=stop_events route別=
+route1	events=4135	runs=251
+route2	events=4922	runs=474
+route4	events=215	runs=43
+=ground_truth gt_route_id別=
+route1	pts=48222	runs=326
+route2	pts=51556	runs=485
+route4	pts=3261	runs=43
+=gps_eval est_trip_id 系統別(先頭文字)=
+sys1	n=60994
+sys2	n=73415
+sys3	n=4807
+sys土	n=3539
+sys平	n=1523

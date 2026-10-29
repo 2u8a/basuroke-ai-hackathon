@@ -1,0 +1,4 @@
+﻿weather_group,days,n,mean_delay_s,median_delay_s,pct_late2m,pct_late5m
+0_晴,18,4029,122,91,39.6,9.9
+1_雨(0-10mm),6,1415,110,92,40.9,5.7
+2_大雨(10mm+),6,1457,112,90,36.7,8.5

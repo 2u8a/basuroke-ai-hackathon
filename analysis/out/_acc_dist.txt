@@ -1,0 +1,5 @@
+rr=(accepted)           n=163957  med=31.5 mean=32.6 min=0.0 max=99.8
+rr=out_of_service_area  n=10015   med=33.6 mean=40.5 min=0.0 max=2775.8
+rr=                     n=1343    med=21.2 mean=18.8 min=4.8 max=85.3
+rr=accuracy_too_low     n=562     med=116.8 mean=188.1 min=100.0 max=2483.7
+accuracy percentiles: p50=31.74 p75=38.18 p90=46.23 p95=52.67 p99=75.67

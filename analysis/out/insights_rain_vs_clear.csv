@@ -1,0 +1,3 @@
+﻿is_rain_day,days,mean_delay_s,trip_acc_pct,mean_accuracy_m,pct_gps_gt30m
+False,30,373.9,80.5,34.3,62.6
+True,13,338.4,77.5,31.7,50.9

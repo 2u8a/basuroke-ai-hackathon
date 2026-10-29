@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "mizuho-basuroke-f370e",
+    "poc": "mizuho-basuroke-poc"
+  },
+  "targets": {},
+  "etags": {}
+}

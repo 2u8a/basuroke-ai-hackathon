@@ -1,0 +1,93 @@
+table_name,field_name,language,translation,record_id,field_value
+stops,stop_name,ja-Hrkt,おおはしば,,大橋場
+stops,stop_name,en,OHASHIBA,,大橋場
+stops,stop_name,ja-Hrkt,じぇいえいにしたまみずほしてんまえ,,JAにしたま瑞穂支店前
+stops,stop_name,en,JA NISHITAMA MIZUHO SHITEN MAE,,JAにしたま瑞穂支店前
+stops,stop_name,ja-Hrkt,せいぶしんようきんこみずほしてんきた,,西武信用金庫瑞穂支店北
+stops,stop_name,en,SEIBU SHINYOU KINKO MIZUHO SHITEN KITA,,西武信用金庫瑞穂支店北
+stops,stop_name,ja-Hrkt,はこねがさきえきひがしぐち,,箱根ケ崎駅東口
+stops,stop_name,en,HAKONEGASAKI EKI HIGASHIGUCHI,,箱根ケ崎駅東口
+stops,stop_name,ja-Hrkt,はこねがさきえきにしぐち,,箱根ケ崎駅西口
+stops,stop_name,en,HAKONEGASAKI EKI NISHIGUCHI,,箱根ケ崎駅西口
+stops,stop_name,ja-Hrkt,みずほまちやくば,,瑞穂町役場
+stops,stop_name,en,MIZUHOMACHI YAKUBA,,瑞穂町役場
+stops,stop_name,ja-Hrkt,びょういんまえ,,病院前
+stops,stop_name,en,BYOIN MAE,,病院前
+stops,stop_name,ja-Hrkt,さやまきゅうりょうにし,,狭山丘陵西
+stops,stop_name,en,SAYAMA KYURYO NISHI,,狭山丘陵西
+stops,stop_name,ja-Hrkt,みずほけーぶるてれびまえ,,瑞穂ケーブルテレビ前
+stops,stop_name,en,MIZUHO CABLE TV MAE,,瑞穂ケーブルテレビ前
+stops,stop_name,ja-Hrkt,たかねした,,高根下
+stops,stop_name,en,TAKANESHITA,,高根下
+stops,stop_name,ja-Hrkt,すいてんぐういりぐち,,水天宮入口
+stops,stop_name,en,SUITENGU IRIGUCHI,,水天宮入口
+stops,stop_name,ja-Hrkt,ぼう,,坊
+stops,stop_name,en,BO,,坊
+stops,stop_name,ja-Hrkt,たいしどういりぐち,,太子堂入口
+stops,stop_name,en,TAISHIDO IRIGUCHI,,太子堂入口
+stops,stop_name,ja-Hrkt,こまがたちょう,,駒形町
+stops,stop_name,en,KOMAGATACHO,,駒形町
+stops,stop_name,ja-Hrkt,みずほにほんぎ,,瑞穂二本木
+stops,stop_name,en,MIZUHO NIHONGI,,瑞穂二本木
+stops,stop_name,ja-Hrkt,にほんぎこうえんきた,,二本木公園北
+stops,stop_name,en,NIHONGI KOEN KITA,,二本木公園北
+stops,stop_name,ja-Hrkt,もとさやまこういきぼうさいひろば,,元狭山広域防災広場
+stops,stop_name,en,MOTOSAYAMA KOIKI BOSAI HIROBA,,元狭山広域防災広場
+stops,stop_name,ja-Hrkt,くりはらしんでん,,栗原新田
+stops,stop_name,en,KURIHARA SHINDEN,,栗原新田
+stops,stop_name,ja-Hrkt,はんのうかいどう,,飯能街道
+stops,stop_name,en,HANNO KAIDO,,飯能街道
+stops,stop_name,ja-Hrkt,まつやまちょうにし,,松山町西
+stops,stop_name,en,MATSUYAMACHO NISHI,,松山町西
+stops,stop_name,ja-Hrkt,まつやまちょういりぐち,,松山町入口
+stops,stop_name,en,MATSUYAMACHO IRIGUCHI,,松山町入口
+stops,stop_name,ja-Hrkt,のうきょうまえ,,農協前
+stops,stop_name,en,NOKYO MAE,,農協前
+stops,stop_name,ja-Hrkt,こまがたふじやま,,駒形富士山
+stops,stop_name,en,KOMAGATA FUJIYAMA,,駒形富士山
+stops,stop_name,ja-Hrkt,みずほばいぱすみなみ,21_1,
+stops,stop_name,en,MIZUHO BYPASS MINAMI,21_1,
+stops,stop_name,ja-Hrkt,みすほばいぱすみなみ,21_2,
+stops,stop_name,en,MIZUHO BYPASS MINAMI,21_2,
+stops,stop_name,ja-Hrkt,りゅうせんじまえ,,竜泉寺前
+stops,stop_name,en,RYUSENJI MAE,,竜泉寺前
+stops,stop_name,ja-Hrkt,みずほえんいりぐち,,みずほ園入口
+stops,stop_name,en,MIZUHOEN IRIGUCHI,,みずほ園入口
+stops,stop_name,ja-Hrkt,けんちのその,,けんちの苑
+stops,stop_name,en,KENCHINOSONOMAE,,けんちの苑
+stops,stop_name,ja-Hrkt,ながおかはせべ,,長岡長谷部
+stops,stop_name,en,NAGAOKA HASEBE,,長岡長谷部
+stops,stop_name,ja-Hrkt,だいにちゅうがっこう,,第二中学校
+stops,stop_name,en,DAINI CHUGAKKO,,第二中学校
+stops,stop_name,ja-Hrkt,いわくらかいどういりぐち,,岩蔵街道入口
+stops,stop_name,en,IWAKURAKAIDO IRIGUCHI,,岩蔵街道入口
+stops,stop_name,ja-Hrkt,おりんぴっく,,オリンピック
+stops,stop_name,en,OLYMPIC,,オリンピック
+stops,stop_name,ja-Hrkt,ふれあいせんたー,,ふれあいセンター
+stops,stop_name,en,FUREAI CENTER,,ふれあいセンター
+stops,stop_name,ja-Hrkt,みずほだいいちしょうがっこう,,瑞穂第一小学校
+stops,stop_name,en,MIZUHO DAIICHI SHOGAKKO,,瑞穂第一小学校
+stops,stop_name,ja-Hrkt,よりあいはうすいこい,,寄り合いハウスいこい
+stops,stop_name,en,YORIAI HOUSE IKOI,,寄り合いハウスいこい
+stops,stop_name,ja-Hrkt,あずさみどおりきた,,阿豆佐味通り北
+stops,stop_name,en,AZUSAMI DORI KITA,,阿豆佐味通り北
+stops,stop_name,ja-Hrkt,じょいふるほんだ,,ジョイフル本田
+stops,stop_name,en,JOYFUL HONDA,,ジョイフル本田
+stops,stop_name,ja-Hrkt,なのはなくりにっく,,菜の花クリニック
+stops,stop_name,en,NANOHANA CLINIC,,菜の花クリニック
+stops,stop_name,ja-Hrkt,あずさみどおりみなみ,,阿豆佐味通り南
+stops,stop_name,en,AZUSAMI DORI MINAMI,,阿豆佐味通り南
+routes,route_long_name,ja-Hrkt,もとさやまこーす,,瑞穂町コミュニティバス　元狭山コース
+routes,route_long_name,en,Motosayama Line,,瑞穂町コミュニティバス　元狭山コース
+routes,route_long_name,ja-Hrkt,もとさやま・ながおかこーす,,瑞穂町コミュニティバス　元狭山・長岡コース
+routes,route_long_name,en,Motosayama-Nagaoka Line,,瑞穂町コミュニティバス　元狭山・長岡コース
+routes,route_long_name,ja-Hrkt,いしはた・とのがやこーす,,瑞穂町コミュニティバス　石畑・殿ケ谷コース
+routes,route_long_name,en,Ishihata-Tonogaya Line,,瑞穂町コミュニティバス　石畑・殿ケ谷コース
+routes,route_long_name,ja-Hrkt,ふれあいせんたーこーす,,瑞穂町コミュニティバス　ふれあいセンターコース
+routes,route_long_name,en,Fureai-Center Line,,瑞穂町コミュニティバス　ふれあいセンターコース
+routes,route_long_name,ja-Hrkt,はこねがさきえきひがしぐちじゅんかんこーす,,瑞穂町コミュニティバス　箱根ケ崎駅東口循環コース
+routes,route_long_name,en,Hakonegasaki-eki Higashiguchi Junkan Line,,瑞穂町コミュニティバス　箱根ケ崎駅東口循環コース
+feed_info,feed_publisher_name,ja-Hrkt,みずほまち,,
+feed_info,feed_publisher_name,en,Mizuho Town,,
+agency,agency_name,ja-Hrkt,みずほまち,1000020133035_1,
+agency,agency_name,en,Mizuho Town,1000020133035_1,

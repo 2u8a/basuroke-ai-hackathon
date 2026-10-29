@@ -1,0 +1,23 @@
+precomputed shapes キー: R3_shape, R5_shape, SHP0004, SHP0005, SHP0006, SHP0007, SHP0008, SHP0009, SHP0010, SHP0011
+
+trip_progress 便数(系統prefix別):
+  1: 39便
+  2: 33便
+  3_土休日_: 6便
+  3_平日_1: 1便
+  3_平日_2: 1便
+  3_平日_3: 1便
+  3_平日_4: 1便
+  3_平日_5: 1便
+  3_平日_6: 1便
+  土休日_10: 1便
+  土休日_12: 1便
+  土休日_15: 1便
+  平日_07時: 1便
+  平日_08時: 3便
+  平日_11時: 1便
+  平日_13時: 1便
+  平日_15時: 1便
+
+系統3: GTFS便数=12 shape={'R3_shape'} precomputed収録=12便
+系統5: GTFS便数=2 shape={'R5_shape'} precomputed収録=2便

@@ -1,0 +1,21 @@
+seq1	箱根ケ崎駅東口	id=1_0	n=196	med=1.4	mean=8.9	ORG
+seq2	瑞穂町役場	id=3_1	n=127	med=1.3	mean=3.5	
+seq3	病院前	id=4_1	n=121	med=2.2	mean=3.7	
+seq4	駒形富士山	id=20_1	n=117	med=3.3	mean=3.5	
+seq5	瑞穂バイパス南	id=21_1	n=117	med=2.8	mean=4.4	
+seq6	狭山丘陵西	id=5_1	n=131	med=2.7	mean=2.9	
+seq7	瑞穂ケーブルテレビ前	id=6_1	n=130	med=2.5	mean=4.2	
+seq8	高根下	id=7_1	n=121	med=2.3	mean=2.4	
+seq9	水天宮入口	id=8_1	n=121	med=2.3	mean=2.9	
+seq10	坊	id=9_1	n=118	med=2.4	mean=2.6	
+seq11	太子堂入口	id=10_1	n=115	med=2.3	mean=2.2	
+seq12	駒形町	id=11_1	n=116	med=3.2	mean=3.8	
+seq13	瑞穂二本木	id=12_1	n=110	med=3.8	mean=4.6	
+seq14	二本木公園北	id=13_0	n=101	med=2.3	mean=2.1	
+seq15	元狭山広域防災広場	id=14_0	n=101	med=1.9	mean=2.0	
+seq16	栗原新田	id=15_0	n=101	med=2.1	mean=2.4	
+seq17	飯能街道	id=16_2	n=101	med=2.5	mean=2.6	
+seq18	松山町西	id=17_2	n=101	med=1.6	mean=1.1	
+seq19	松山町入口	id=18_1	n=102	med=6.9	mean=8.6	
+seq20	農協前	id=19_1	n=54	med=1.6	mean=3.2	
+seq30	駒形富士山	id=20_2	n=47	med=1.0	mean=1.1	

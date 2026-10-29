@@ -1,0 +1,20 @@
+# --- OS共通のゴミファイル ---
+.DS_Store
+Thumbs.db
+
+# --- Python関連 (backend) ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+
+# --- Node.js関連 (frontend) ---
+node_modules/
+npm-debug.log*
+
+# --- 秘密情報 (超重要！) ---
+.env
+*.local
+firebase-key.json
+backend/venv/

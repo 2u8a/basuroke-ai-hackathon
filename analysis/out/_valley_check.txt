@@ -1,0 +1,239 @@
+12_2 座標=35.79166,139.35849
+=== 2026-05-24#722 trip=1++土休日+13 sched=58560(16:16) 現行検出actual=58423(delay=-2.3分) ===
+  t-sched=-593s dist=  692m
+  t-sched=-582s dist=  692m
+  t-sched=-570s dist=  780m
+  t-sched=-559s dist=  780m
+  t-sched=-548s dist=  780m
+  t-sched=-536s dist=  869m
+  t-sched=-525s dist=  958m
+  t-sched=-514s dist= 1047m
+  t-sched=-503s dist= 1136m
+  t-sched=-491s dist= 1226m
+  t-sched=-480s dist= 1315m
+  t-sched=-469s dist= 1307m
+  t-sched=-458s dist= 1309m
+  t-sched=-446s dist= 1230m
+  t-sched=-435s dist= 1252m
+  t-sched=-424s dist= 1198m
+  t-sched=-412s dist= 1240m
+  t-sched=-401s dist= 1158m
+  t-sched=-390s dist= 1136m
+  t-sched=-379s dist= 1201m
+  t-sched=-368s dist= 1201m
+  t-sched=-356s dist= 1131m
+  t-sched=-345s dist= 1002m
+  t-sched=-334s dist=  944m
+  t-sched=-319s dist=  844m
+  t-sched=-307s dist=  844m
+  t-sched=-296s dist=  748m
+  t-sched=-285s dist=  703m
+  t-sched=-274s dist=  606m
+  t-sched=-262s dist=  514m
+  t-sched=-251s dist=  432m
+  t-sched=-239s dist=  290m
+  t-sched=-228s dist=  236m
+  t-sched=-214s dist=  228m
+  t-sched=-203s dist=  140m
+  t-sched=-192s dist=  140m
+  t-sched=-181s dist=  140m
+  t-sched=-170s dist=  140m
+  t-sched=-159s dist=  140m
+  t-sched=-148s dist=  140m
+  t-sched=-137s dist=   58m  <-現行検出
+  t-sched=-126s dist=   58m
+  t-sched=-114s dist=   58m
+  t-sched=-102s dist=   58m
+  t-sched= -91s dist=   58m
+  t-sched= -79s dist=   58m
+  t-sched= -68s dist=   58m
+  t-sched= -56s dist=   58m
+  t-sched= -45s dist=   58m
+  t-sched= -34s dist=   58m
+  t-sched= -23s dist=   58m
+  t-sched= -11s dist=   58m
+  t-sched=  +0s dist=   58m
+  t-sched= +12s dist=   58m
+  t-sched= +23s dist=   58m
+  t-sched= +34s dist=   60m
+  t-sched= +45s dist=  155m
+  t-sched= +57s dist=  230m
+  t-sched= +68s dist=  319m
+  t-sched= +79s dist=  319m
+  t-sched= +91s dist=  319m
+  t-sched=+102s dist=  319m
+  t-sched=+113s dist=  319m
+  t-sched=+124s dist=  409m
+  t-sched=+136s dist=  502m
+  t-sched=+148s dist=  681m
+  t-sched=+159s dist=  769m
+  t-sched=+170s dist=  859m
+  t-sched=+181s dist=  949m
+  t-sched=+192s dist= 1039m
+  t-sched=+204s dist= 1039m
+  t-sched=+215s dist= 1039m
+  t-sched=+226s dist= 1039m
+  t-sched=+237s dist= 1129m
+  t-sched=+248s dist= 1131m
+  t-sched=+260s dist= 1131m
+  t-sched=+271s dist= 1131m
+  t-sched=+282s dist= 1131m
+  t-sched=+293s dist= 1131m
+  t-sched=+305s dist= 1131m
+  t-sched=+316s dist= 1143m
+  t-sched=+327s dist= 1143m
+  t-sched=+338s dist= 1143m
+  t-sched=+349s dist=  993m
+  t-sched=+360s dist=  993m
+  t-sched=+371s dist=  993m
+  t-sched=+382s dist=  907m
+  t-sched=+393s dist=  949m
+  t-sched=+404s dist=  926m
+  t-sched=+415s dist=  853m
+  t-sched=+426s dist=  861m
+  t-sched=+437s dist=  892m
+  t-sched=+448s dist=  845m
+  t-sched=+460s dist=  774m
+  t-sched=+472s dist=  881m
+  t-sched=+483s dist=  964m
+  t-sched=+494s dist=  964m
+  t-sched=+505s dist= 1075m
+  t-sched=+516s dist= 1192m
+  t-sched=+528s dist= 1206m
+  t-sched=+539s dist= 1206m
+  t-sched=+550s dist= 1226m
+  t-sched=+561s dist= 1226m
+  t-sched=+573s dist= 1226m
+  t-sched=+584s dist= 1097m
+  t-sched=+595s dist=  988m
+  t-sched=+606s dist=  972m
+  t-sched=+617s dist=  862m
+  t-sched=+628s dist=  862m
+  t-sched=+639s dist=  862m
+  t-sched=+650s dist=  862m
+  t-sched=+662s dist=  862m
+  t-sched=+673s dist=  862m
+  t-sched=+684s dist=  862m
+  t-sched=+696s dist=  862m
+  t-sched=+706s dist=  880m
+  t-sched=+718s dist=  804m
+=== 2026-05-04#290 trip=1++土休日+8 sched=44520(12:22) 現行検出actual=44388(delay=-2.2分) ===
+  t-sched=-599s dist=  604m
+  t-sched=-588s dist=  692m
+  t-sched=-577s dist=  780m
+  t-sched=-566s dist=  958m
+  t-sched=-555s dist= 1047m
+  t-sched=-544s dist= 1136m
+  t-sched=-533s dist= 1226m
+  t-sched=-522s dist= 1226m
+  t-sched=-511s dist= 1226m
+  t-sched=-500s dist= 1315m
+  t-sched=-489s dist= 1307m
+  t-sched=-478s dist= 1219m
+  t-sched=-468s dist= 1230m
+  t-sched=-456s dist= 1252m
+  t-sched=-445s dist= 1198m
+  t-sched=-435s dist= 1240m
+  t-sched=-424s dist= 1158m
+  t-sched=-413s dist= 1212m
+  t-sched=-402s dist= 1212m
+  t-sched=-391s dist= 1201m
+  t-sched=-380s dist= 1201m
+  t-sched=-369s dist= 1201m
+  t-sched=-358s dist= 1065m
+  t-sched=-347s dist= 1002m
+  t-sched=-336s dist= 1002m
+  t-sched=-325s dist= 1002m
+  t-sched=-314s dist=  944m
+  t-sched=-302s dist=  844m
+  t-sched=-292s dist=  844m
+  t-sched=-281s dist=  748m
+  t-sched=-270s dist=  606m
+  t-sched=-259s dist=  514m
+  t-sched=-248s dist=  514m
+  t-sched=-235s dist=  371m
+  t-sched=-223s dist=  290m
+  t-sched=-212s dist=  236m
+  t-sched=-201s dist=  140m
+  t-sched=-188s dist=  140m
+  t-sched=-177s dist=  140m
+  t-sched=-166s dist=  140m
+  t-sched=-155s dist=  140m
+  t-sched=-143s dist=  140m
+  t-sched=-132s dist=   58m  <-現行検出
+  t-sched=-121s dist=   58m
+  t-sched=-110s dist=   58m
+  t-sched= -99s dist=   58m
+  t-sched= -88s dist=   58m
+  t-sched= -77s dist=   58m
+  t-sched= -66s dist=   58m
+  t-sched= -56s dist=   58m
+  t-sched= -45s dist=   58m
+  t-sched= -34s dist=   58m
+  t-sched= -23s dist=   58m
+  t-sched= -11s dist=   58m
+  t-sched=  -1s dist=   58m
+  t-sched= +10s dist=   58m
+  t-sched= +21s dist=   58m
+  t-sched= +32s dist=   60m
+  t-sched= +43s dist=   86m
+  t-sched= +56s dist=  238m
+  t-sched= +66s dist=  230m
+  t-sched= +77s dist=  319m
+  t-sched= +88s dist=  319m
+  t-sched= +99s dist=  319m
+  t-sched=+110s dist=  319m
+  t-sched=+121s dist=  499m
+  t-sched=+132s dist=  592m
+  t-sched=+143s dist=  679m
+  t-sched=+154s dist=  769m
+  t-sched=+166s dist=  949m
+  t-sched=+176s dist= 1039m
+  t-sched=+187s dist= 1039m
+  t-sched=+199s dist= 1131m
+  t-sched=+210s dist= 1143m
+  t-sched=+221s dist= 1143m
+  t-sched=+231s dist= 1143m
+  t-sched=+242s dist= 1080m
+  t-sched=+254s dist=  993m
+  t-sched=+264s dist=  949m
+  t-sched=+275s dist=  869m
+  t-sched=+286s dist=  853m
+  t-sched=+297s dist=  861m
+  t-sched=+308s dist=  802m
+  t-sched=+319s dist=  845m
+  t-sched=+330s dist=  845m
+  t-sched=+341s dist=  805m
+  t-sched=+352s dist=  881m
+  t-sched=+363s dist=  972m
+  t-sched=+374s dist=  964m
+  t-sched=+386s dist=  964m
+  t-sched=+397s dist= 1075m
+  t-sched=+409s dist= 1082m
+  t-sched=+420s dist= 1206m
+  t-sched=+442s dist= 1226m
+  t-sched=+453s dist= 1226m
+  t-sched=+465s dist= 1226m
+  t-sched=+476s dist= 1226m
+  t-sched=+487s dist= 1226m
+  t-sched=+498s dist= 1334m
+  t-sched=+509s dist= 1226m
+  t-sched=+520s dist= 1226m
+  t-sched=+531s dist= 1097m
+  t-sched=+542s dist=  972m
+  t-sched=+553s dist=  862m
+  t-sched=+564s dist=  862m
+  t-sched=+575s dist=  880m
+  t-sched=+586s dist=  804m
+  t-sched=+596s dist=  844m
+  t-sched=+607s dist=  943m
+  t-sched=+618s dist=  943m
+  t-sched=+629s dist=  943m
+  t-sched=+640s dist=  985m
+  t-sched=+651s dist=  985m
+  t-sched=+662s dist=  985m
+  t-sched=+672s dist=  985m
+  t-sched=+684s dist= 1082m
+  t-sched=+695s dist= 1182m
+  t-sched=+706s dist= 1182m
+  t-sched=+717s dist= 1284m

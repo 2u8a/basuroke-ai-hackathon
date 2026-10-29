@@ -1,0 +1,9 @@
+route=1 tid=1++平日+19 inprog=True shape=SHP0009 inshape=True shp_pts=576 prog_stops=33
+  shape_keys=['lat', 'lon', 'dist_traveled']
+  prog_keys=['time_sec', 'distance_m', 'stop_id', 'stop_sequence']
+route=2 tid=2++平日+6 inprog=True shape=SHP0006 inshape=True shp_pts=299 prog_stops=13
+  shape_keys=['lat', 'lon', 'dist_traveled']
+  prog_keys=['time_sec', 'distance_m', 'stop_id', 'stop_sequence']
+route=4 tid=土休日_15時25分_系統1_0f6c73 inprog=True shape=SHP0011 inshape=True shp_pts=57 prog_stops=5
+  shape_keys=['lat', 'lon', 'dist_traveled']
+  prog_keys=['time_sec', 'distance_m', 'stop_id', 'stop_sequence']
