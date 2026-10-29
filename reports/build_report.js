@@ -1,11 +1,12 @@
 const fs = require("fs");
+const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   AlignmentType, HeadingLevel, BorderStyle, WidthType, ShadingType,
   ImageRun, PageBreak, LevelFormat, TableOfContents, Footer, PageNumber
 } = require("docx");
 
-const G = "C:/Users/2u8a/src/claude_code/mizuho-basuroke/graphs";
+const G = path.join(__dirname, "..", "graphs");
 const FONT = "Yu Gothic";
 
 function pngSize(p){ const b=fs.readFileSync(p); return {w:b.readUInt32BE(16),h:b.readUInt32BE(20)}; }
@@ -209,4 +210,6 @@ const doc=new Document({
     children:C
   }]
 });
-Packer.toBuffer(doc).then(buf=>{fs.writeFileSync("瑞穂町バスロケPoC報告書_v5.docx",buf);console.log("written v5  bytes="+buf.length);});
+// 引数で出力先を指定できる。既定ではreports内に保存する。
+const outputPath = process.argv[2] || path.join(__dirname, "瑞穂町バスロケPoC報告書_v5.docx");
+Packer.toBuffer(doc).then(buf=>{fs.writeFileSync(outputPath,buf);console.log("written v5  bytes="+buf.length);});

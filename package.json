@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "report": "node reports/build_report.js"
+  },
   "dependencies": {
     "docx": "^9.7.1"
   }
