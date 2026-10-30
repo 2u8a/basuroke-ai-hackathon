@@ -138,6 +138,7 @@ GTFS-Realtime（VehiclePosition）取得。
 
 ## 📖 Documentation
 
+* 東京AIハッカソン2026・参加意図とAI化構想: [docs/tokyo_ai_hackathon_2026.md](docs/tokyo_ai_hackathon_2026.md)
 * 要件定義: `docs/requirements.md`
 * アーキテクチャ: `docs/architecture.md`
 * API仕様: `docs/api-spec.md`
