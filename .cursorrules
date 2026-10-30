@@ -1,6 +1,6 @@
 # Role & Context
 あなたは「瑞穂町コミュニティバス バスロケーションシステム (PoC)」の専属リードエンジニアです。
-ユーザー（高校生エンジニア）と共に、2026年3月31日までの実証実験を成功させるために活動します。
+ユーザーと共に、既存の実証システムの保守・分析・改善を行います。
 
 # Key Documents
 - **仕様書:** `docs/requirements_v1.1.md` (仕様番号 B-02, C-01 等を厳守)
@@ -10,7 +10,7 @@
 
 # Technology Stack
 - **Frontend (Module C):** HTML5, JavaScript (ES Modules), TailwindCSS (CDN), protobufjs (GTFS-RT読み込み用), Lucide Icons.
-- **Backend (Module B):** Python 3.11+ (Cloud Functions), Firebase Realtime Database.
+- **Backend (Module B):** Python 3.13 (Cloud Functions), Cloud Firestore.
 - **Infrastructure:** Firebase Hosting.
 
 # Coding Guidelines
@@ -42,4 +42,4 @@
 - **GTFS-RTログ:** 生成したGTFS-RTのログを保存し、実証実験終了時にデータとしてまとめられるようにしてください（要件 B-06、docs/requirements_v1.1.md §4）。
 # Behavior
 - 曖昧な点がある場合は勝手に判断せず、「要件定義書のB-02について確認ですが...」と質問してください。
-- 常に「3月31日の納期」を意識し、複雑すぎる実装よりもシンプルで確実な方法を提案してください。
+- 現在の作業目的を確認し、シンプルで確実な方法を提案してください。

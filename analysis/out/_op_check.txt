@@ -1,4 +1,0 @@
-columns: date, run_id, trip_id, route_id, stop_id, stop_seq, stop_name, stop_lat, stop_lon, sched_sec, actual_sec, delay_sec, op_delay_sec, is_origin, is_terminal, is_station, gap_dist_m
-route=1 after=1823 op非NULL=1789 始発除外=1737
-route=2 after=2945 op非NULL=2783 始発除外=2699
-route=4 after=65 op非NULL=64 始発除外=52

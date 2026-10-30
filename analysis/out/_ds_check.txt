@@ -1,1 +1,0 @@
-bus_gps_data	asia-northeast1

@@ -1,5 +1,7 @@
 # Module B – GPS Ingestion & GTFS-RT Generator
 
+> 初期実装時のAPI資料です。便固定・監査ログ等を含む現在の構成は [system_overview.md](system_overview.md)、詳細な動作は [new_architecture.md](new_architecture.md) と `backend/main.py` を参照してください。
+
 このモジュールは、バス車両から送信されるGPSデータを受信し、
 Firestoreに保存し、GTFS-Realtime (VehiclePosition) を生成するAPIサーバーです。
 

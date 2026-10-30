@@ -1,7 +1,0 @@
-=系統3推定点の後知恵gt帰属=
-gt_route=1	in_service=True	n=2511
-gt_route=None	in_service=False	n=1726
-gt_route=4	in_service=True	n=544
-gt_route=2	in_service=True	n=26
-
-系統3推定点 n=4807  R3_shapeへのoff: 中央=135m 90%tile=2229m  off<55m割合=34%

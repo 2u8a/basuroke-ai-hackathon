@@ -1,9 +1,0 @@
-=trips route4=
-土休日_12時56分_系統1_0f6c73	stops=3	events=43	runs=15
-土休日_15時25分_系統1_0f6c73	stops=3	events=43	runs=15
-土休日_10時22分_系統1_0f6c73	stops=4	events=32	runs=13
-=stops route4=
-3_1	瑞穂町役場	n=38
-3_2	瑞穂町役場	n=38
-29_0	ふれあいセンター	n=32
-1_0	箱根ケ崎駅東口	n=10

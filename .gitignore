@@ -12,6 +12,14 @@ env/
 # --- Node.js関連 (frontend) ---
 node_modules/
 npm-debug.log*
+.firebase/
+firebase-debug*.log
+firestore-debug*.log
+ui-debug*.log
+
+# --- 分析の一時出力（確定した集計CSV・JSON・図表集は保持） ---
+analysis/out/**/_*
+analysis/out/**/*.png
 
 # --- 秘密情報 (超重要！) ---
 .env

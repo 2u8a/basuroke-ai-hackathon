@@ -1,5 +1,7 @@
 # Firebase Setup Guide（Module B / Backend）
 
+> 構築当時の手順を保存した資料です。依存関係の例やWindows向けコマンドを含みます。現在のディレクトリ・実行環境は [README](../README.md)、データ保存先は [system_overview.md](system_overview.md) を参照してください。
+
 本ドキュメントは、**現在の実装（HTTP + Cloud Functions Gen2 + Firestore）**を前提とした最新のセットアップ手順です。  
 旧ドキュメントの Realtime Database 前提構成は使用しません。
 
